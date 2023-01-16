@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
     });
     socket.on('welcome message', (username) => {
       console.log('new user : ' + username);
-      io.emit('chat message', username+ " est arrivé !");
+      io.emit('chat message', username + " has arrived !");
   });
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
@@ -30,5 +30,5 @@ io.on('connection', (socket) => {
 
 
 server.listen(3000, () => {
-    console.log('listening on *:3000');
+    console.log('listening on :3000');
 });
