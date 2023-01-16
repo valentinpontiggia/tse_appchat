@@ -30,8 +30,10 @@ io.on('connection', (socket) => {
     });
     socket.on("disconnect", () => {
         console.log(user_log + " left.");
+        remove_user(users, user_log);
         io.emit('chat message', user_log + " left.");
     });
+    io.emit(users);
 });
 
 function remove_user(users, username) {
