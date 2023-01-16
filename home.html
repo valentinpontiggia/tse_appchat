@@ -118,7 +118,6 @@
         var form = document.getElementById('form');
         var input = document.getElementById('input');
         var username = document.getElementById('username');
-        var mail = document.getElementById('mail');
         var handle = document.getElementById('handle');
         var feedback = document.getElementById('feedback');
 
@@ -142,7 +141,6 @@
             });
             socket.emit('welcome message', $('#username').val());
             username.value = '';
-            mail.value = '';
             var div = event.target;
             var parent = div.parentNode;
             parent.removeChild(div);
