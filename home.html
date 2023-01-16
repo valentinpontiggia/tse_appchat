@@ -89,8 +89,10 @@
 <body>
     <div id="aboutMe"></div>
     <div id="users">
-        <ul id="listusers"> </ul>
+        <h2>Connected Users</h2>
+        <ul id="listusers"></ul>
     </div>
+    
     <div id="login">
         <form action="" id="loginform">
             <h1>Welcome !</h1>
@@ -122,6 +124,18 @@
         var feedback = document.getElementById('feedback');
 
         var socket = io.connect('http://localhost:3000');
+        var usersList = document.getElementById('listusers');
+
+        socket.on('updateUsers', (connectedUsers) => {
+            usersList.innerHTML = '';
+            connectedUsers.forEach(user => {
+                var userItem = document.createElement('li');
+                userItem.innerHTML = user;
+                usersList.appendChild(userItem);
+            });
+        });
+
+
         $('#loginform').submit(function (event) {
             event.preventDefault();
             socket.emit('login', {

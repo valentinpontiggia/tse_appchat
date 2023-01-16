@@ -50,6 +50,26 @@ function remove_user(users, username) {
     return users;
 }
 
+let connectedUsers = [];
+
+io.on('connection', (socket) => {
+    // When a user connects, add them to the connectedUsers list
+    socket.on('login', (data) => {
+        connectedUsers.push(data.username);
+        io.emit('updateUsers', connectedUsers);
+    });
+
+    // When a user disconnects, remove them from the connectedUsers list
+    socket.on('disconnect', () => {
+        const index = connectedUsers.indexOf(socket.username);
+        if (index !== -1) {
+            connectedUsers.splice(index, 1);
+            io.emit('updateUsers', connectedUsers);
+        }
+    });
+});
+
+
 
 server.listen(3000, () => {
     console.log('listening on :3000');
