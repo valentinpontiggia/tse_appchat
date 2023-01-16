@@ -95,10 +95,6 @@
         </form>
     </div>
 
-    <div>
-        <button id="disconnect">Disconnect</button>
-    </div>
-
     <ul id="messages"></ul>
     <form id="form" action="">
         <input id="input" autocomplete="off" /><button>Send</button>
@@ -159,7 +155,7 @@
               hour = "0" + hour;
             }
             var minutes = now.getMinutes();
-            if (minutes<10){
+            if (minutes < 10){
               minutes = "0" + minutes;
             }
             text.innerHTML = msg;
