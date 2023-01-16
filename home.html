@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Socket.IO chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #form {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff;
+        }
+
+        .messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display : flex;
+        }
+
+        .message {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .welcomemessage>li {
+            padding: 0.5rem 1rem;
+        }
+
+        .welcomemessage {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .message>li {
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            flex:1;
+          }
+
+        #messages>li:nth-child(odd) {
+            background: #efefef;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="users">
+        <ul id="listusers"> </ul>
+    </div>
+    <div id="login">
+        <form action="" id="loginform">
+            <h1>Bienvenue</h1>
+            <p>Service de chat - Entrez votre pseudo et votre email</p>
+            <input type="text" name="login" id="username" placeholder="Nom d'utilisateur">
+            <input type="mail" name="mail" id="mail" placeholder="E-mail">
+            <input type="submit" value="Envoyer">
+        </form>
+    </div>
+
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        var messages = document.getElementById('messages');
+        var form = document.getElementById('form');
+        var input = document.getElementById('input');
+        var username = document.getElementById('username');
+        var mail = document.getElementById('mail');
+
+        var socket = io.connect('http://localhost:3000');
+        $('#loginform').submit(function (event) {
+            event.preventDefault();
+            socket.emit('login', {
+                username: $('#username').val()
+            });
+            socket.emit('welcome message', $('#username').val());
+            username.value = '';
+            mail.value = '';
+            var div = event.target;
+            var parent = div.parentNode;
+            parent.removeChild(div);
+
+        })
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('welcome message', function (username) {
+          console.log("salut");  
+          var mymsg = document.createElement('ul');
+            mymsg.classList.add("welcomemessage");
+            var text = document.createElement('li');
+            text.innerHTML = "'utilisateur "+msg+"vient de se connecter !";
+            mymsg.appendChild(text);
+            messages.appendChild(mymsg);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('chat message', function (msg) {
+            var mymsg = document.createElement('ul');
+            mymsg.classList.add("message");
+            var text = document.createElement('li');
+            var date = document.createElement('li');
+            var now = new Date();
+            var hour = now.getHours();
+            if (hour<10){
+              hour = "0"+hour;
+            }
+            var minutes = now.getMinutes();
+            if (minutes<10){
+              minutes = "0"+minutes;
+            }
+            text.innerHTML = msg;
+            date.innerHTML = "<span>"+hour+":"+minutes+"</span>";
+            mymsg.appendChild(text);
+            mymsg.appendChild(date);
+            messages.appendChild(mymsg);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+
+</html>

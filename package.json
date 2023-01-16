@@ -1,0 +1,21 @@
+{
+  "name": "appchat",
+  "version": "1.0.0",
+  "description": "Project App Chat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@devops.telecomste.fr:dhoop.matthieu/tp3.git"
+  },
+  "author": "Valentin Pontiggia, Matthieu D'Hoop",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "expressjs": "^1.0.1",
+    "socket.io": "^4.5.4",
+    "swig": "^1.4.2"
+  }
+}
