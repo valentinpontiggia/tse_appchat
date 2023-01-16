@@ -28,6 +28,11 @@ io.on('connection', (socket) => {
         console.log('message: ' + msg);
         io.emit('chat message', "<b>" + user_log + " : </b>" + msg);
     });
+
+        socket.on('typing', (data)=>{
+            socket.broadcast.emit('typing',data) ;         
+        });
+
     socket.on("disconnect", () => {
         console.log(user_log + " left.");
         remove_user(users, user_log);
