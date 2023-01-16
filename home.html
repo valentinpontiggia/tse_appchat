@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Socket.IO chat</title>
+    <title>AppChat</title>
     <style>
         body {
             margin: 0;
@@ -87,12 +87,16 @@
     </div>
     <div id="login">
         <form action="" id="loginform">
-            <h1>Bienvenue</h1>
-            <p>Service de chat - Entrez votre pseudo et votre email</p>
+            <h1>Welcome !</h1>
+            <p>Chat service - please enter your name and e-mail.</p>
             <input type="text" name="login" id="username" placeholder="Nom d'utilisateur">
             <input type="mail" name="mail" id="mail" placeholder="E-mail">
             <input type="submit" value="Login">
         </form>
+    </div>
+
+    <div>
+        <button id="disconnect">Disconnect</button>
     </div>
 
     <ul id="messages"></ul>
@@ -123,7 +127,7 @@
             var parent = div.parentNode;
             parent.removeChild(div);
 
-        })
+        });
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -134,11 +138,11 @@
         });
 
         socket.on('welcome message', function (username) {
-          console.log("salut");  
-          var mymsg = document.createElement('ul');
+            console.log("salut");  
+            var mymsg = document.createElement('ul');
             mymsg.classList.add("welcomemessage");
             var text = document.createElement('li');
-            text.innerHTML = "'utilisateur "+msg+"vient de se connecter !";
+            text.innerHTML = "User " + msg + " joined the chat !";
             mymsg.appendChild(text);
             messages.appendChild(mymsg);
             window.scrollTo(0, document.body.scrollHeight);
@@ -151,15 +155,15 @@
             var date = document.createElement('li');
             var now = new Date();
             var hour = now.getHours();
-            if (hour<10){
-              hour = "0"+hour;
+            if (hour < 10){
+              hour = "0" + hour;
             }
             var minutes = now.getMinutes();
             if (minutes<10){
-              minutes = "0"+minutes;
+              minutes = "0" + minutes;
             }
             text.innerHTML = msg;
-            date.innerHTML = "<span>"+hour+":"+minutes+"</span>";
+            date.innerHTML = "<span>" + hour + ":" + minutes + "</span>";
             mymsg.appendChild(text);
             mymsg.appendChild(date);
             messages.appendChild(mymsg);
