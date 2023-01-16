@@ -16,7 +16,7 @@ io.on('connection', (socket) => {
     var user_log = ''
     socket.on('login', function (user) {
         console.log(user);
-        user_log = user.username
+        user_log = user.username;
     });
     socket.on('welcome message', (username) => {
       console.log('new user : ' + username);
@@ -24,9 +24,14 @@ io.on('connection', (socket) => {
   });
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
-        io.emit('chat message', "<b>"+user_log+" : </b>" + msg);
+        io.emit('chat message', "<b>" + user_log + " : </b>" + msg);
+    });
+    socket.on("disconnect", () => {
+        console.log(user_log + " left.");
+        io.emit('chat message', user_log + " left.");
     });
 });
+
 
 
 server.listen(3000, () => {
