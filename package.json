@@ -4,7 +4,8 @@
   "description": "Project App Chat",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server",
+    "dev": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -15,7 +16,12 @@
   "dependencies": {
     "express": "^4.18.2",
     "expressjs": "^1.0.1",
+    "moment": "^2.29.4",
     "socket.io": "^4.5.4",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "vue": "^3.2.45"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
