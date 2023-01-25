@@ -8,4 +8,14 @@ function formatMessage(username, text){
     }
 }
 
-module.exports = formatMessage;
+const formatPrivateMessage = (username, text, recipient) => {
+    return {
+      username,
+      text,
+      recipient,
+      time: moment().format('h:mm a'),
+    };
+  };
+  
+
+module.exports = {formatMessage,formatPrivateMessage};

@@ -66,7 +66,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require("socket.io");
-const formatMessage = require('./utils/messages')
+const {formatMessage, formatPrivateMessage} = require('./utils/messages')
 const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users')
 
 const app = express();
@@ -75,7 +75,7 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const botName = 'ChatCord Bot';
+const botName = 'AppChat Bot';
 
 io.on('connection', (socket) => {
     socket.on('joinRoom',({ username, room}) => {
@@ -89,11 +89,18 @@ io.on('connection', (socket) => {
     });
     socket.on('disconnect', ()=> {
         const user = userLeave(socket.id);
-
+  
         if(user){
-        io.to(user.room).emit('message', formatMessage(botName, + user.username+ ' has left the chat'));
-        io.to(user.room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
+            io.to(user.room).emit('message', formatMessage(botName, user.username+ ' has left the chat'));
+            io.to(user.room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
         }
+    });
+
+    socket.on("privateMessage", ({ recipient, msg }) => {
+        // Emit private message event to intended recipient
+        const user = getCurrentUser(socket.id);
+        console.log("recipient : " + recipient );
+        io.to(recipient).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
     });
 
     socket.on('chatMessage', (msg) => {
