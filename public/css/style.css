@@ -46,6 +46,27 @@ a {
 	font-size: 17px;
 }
 
+/* Connection Page */
+
+#choose-avatar {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.avatars > input{
+	display: none;
+}
+
+.avatars > input + img{
+	cursor: pointer;
+	border: 2px solid transparent;
+}
+
+.avatars > input:checked + img{
+	border: 2px solid rgb(194, 222, 255);
+	border-radius: 100%;
+}
+
 /* Chat Page */
 
 .chat-container {
@@ -195,3 +216,4 @@ a {
 		display: none;
 	}
 }
+
