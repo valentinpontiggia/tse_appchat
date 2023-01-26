@@ -97,9 +97,10 @@ userList.addEventListener("click", (e) => {
 });
 
 socket.on('invite', (room,inviter) =>{
-    console.log("invite");
     //socket.emit('joinRoom', {inviter, room});
-    window.location.href = `${window.location.origin}/Private.html?username=${inviter}&room=${room}`;
+    window.location.href = `${window.location.origin}`+"/Private.html?username="+username+"&room=private-"+room+"-"+username;
+    socket.emit('joinRoom', { username, room: room });
+    console.log("invite");
 });
 
 
