@@ -83,12 +83,12 @@ userList.addEventListener("click", (e) => {
     if (e.target && e.target.matches("li")) {
         // Get the recipient's username
         const recipient = e.target.innerText;
-
+        //ici
         // Create a unique room name
         const roomName = `private-${username}-${recipient}`;
 
         // Have the user join the private room
-        socket.emit('joinRoom', { username, room: roomName });
+        socket.emit('joinRoom', {username, room : roomName, is_typing, avatar});
 
         // Append the recipient's username to the URL as a query parameter
         const newUrl = `${window.location.origin}/Private.html?username=${username}&room=${roomName}`;
@@ -99,7 +99,7 @@ userList.addEventListener("click", (e) => {
 socket.on('invite', (room,inviter) =>{
     //socket.emit('joinRoom', {inviter, room});
     window.location.href = `${window.location.origin}`+"/Private.html?username="+username+"&room=private-"+room+"-"+username;
-    socket.emit('joinRoom', { username, room: room });
+    socket.emit('joinRoom', {username, room:room, is_typing, avatar});
     console.log("invite");
 });
 
