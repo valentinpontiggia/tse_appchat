@@ -63,7 +63,12 @@ chatForm.addEventListener('submit', (e) => {
     e.target.elements.msg.focus();
 });
 
-userList.addEventListener("click", (e) => {
+
+/*socket.on('typing', username => {
+    feedback.innerHTML = '<p><em>' + username + ' is typing... </em></p>';
+});*/
+
+/*userList.addEventListener("click", (e) => {
     if (e.target && e.target.matches("li")) {
         // Get the recipient's username
         const recipient = e.target.innerText;
@@ -72,9 +77,34 @@ userList.addEventListener("click", (e) => {
         const newUrl = `${window.location.origin}${window.location.pathname}?recipient=${recipient}`;
         window.history.pushState({}, "", newUrl);
     }
+});*/
+
+userList.addEventListener("click", (e) => {
+    if (e.target && e.target.matches("li")) {
+        // Get the recipient's username
+        const recipient = e.target.innerText;
+
+        // Create a unique room name
+        const roomName = `private-${username}-${recipient}`;
+
+        // Have the user join the private room
+        socket.emit('joinRoom', { username, room: roomName });
+
+        // Append the recipient's username to the URL as a query parameter
+        const newUrl = `${window.location.origin}/Private.html?username=${username}&room=${roomName}`;
+        window.location.href = newUrl;
+    }
 });
 
-socket.on("privateMessage", (message) => {
+socket.on('invite', (room,inviter) =>{
+    //socket.emit('joinRoom', {inviter, room});
+    window.location.href = `${window.location.origin}`+"/Private.html?username="+username+"&room=private-"+room+"-"+username;
+    socket.emit('joinRoom', { username, room: room });
+    console.log("invite");
+});
+
+
+/*socket.on("privateMessage", (message) => {
     const { recipient } = Qs.parse(location.search, { ignoreQueryPrefix: true });
     console.log("message.recipient : " + message.recipient);
     console.log("recipient : "+recipient);
@@ -90,7 +120,15 @@ socket.on("privateMessage", (message) => {
         //document.querySelector('.private-chat-messages').hidden = false;
         document.querySelector('.chat-messages').appendChild(div);
     }
+});*/
+
+socket.on("privateMessage", ({ recipient, msg }) => {
+    // Emit private message event to intended recipient
+    const user = getCurrentUser(socket.id);
+    console.log("hohoho");
+    socket.to(`private-${recipient}`).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
 });
+
 
 function outputMessage (message) {
     const div = document.createElement('div');
