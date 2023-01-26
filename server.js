@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
                 console.log("room : "+room);
                 console.log("inviter : "+username)
                 socket.to(getIdByName(recipient)).emit('invite',(room,username));
-                socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
+                socket.to(room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'You are now in a private room'));
             }
         } else {
             const user = userJoin(socket.id, username, room, is_typing, avatar);
