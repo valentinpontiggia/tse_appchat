@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require("socket.io");
 const {formatMessage, formatPrivateMessage} = require('./utils/messages')
-const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users')
+const {userJoin, getCurrentUser, getIdByName, userLeave, getRoomUsers} = require('./utils/users')
 
 const app = express();
 const server = http.createServer(app);
@@ -15,12 +15,34 @@ const ChatBot = {avatar: "https://cdn-icons-png.flaticon.com/512/1786/1786548.pn
 
 io.on('connection', (socket) => {
     socket.on('joinRoom',({ username, room, is_typing, avatar}) => {
+        if (room.startsWith('private-')) {
+            // Get the recipient's username from the room name
+            var lastDashIndex = room.lastIndexOf("-");
+            var recipient = room.substring(lastDashIndex+1);
+            //var recipient = url.substring(0,url.lastIndexOf("%")-1);
+            console.log("recipient : "+recipient);
+            // Have the user join the private room
+            const user = userJoin(socket.id, username, room, is_typing, avatar);
+            socket.join(room);
+            io.to(user.id).emit('message', formatMessage(ChatBot.avatar, ChatBot.username,'You are now in a private room'));
+            if (getRoomUsers(room).length<2){
+                console.log("room : "+room);
+                console.log("inviter : "+username)
+                socket.to(getIdByName(recipient)).emit('invite',(room,username));
+                socket.join(room);
+                io.to(room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username,'You are now in a private room'));
+            }
+            //socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
+            socket.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username,'Private room...'));
+        
+        } else {
         const user = userJoin(socket.id, username, room, is_typing, avatar);
         socket.join(user.room);
         socket.emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'Welcome here'));
         socket.broadcast.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, user.username + ' has joined the chat.'));
 
         io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});
+        }
     });
 
     socket.on('disconnect', ()=> {
@@ -35,8 +57,8 @@ io.on('connection', (socket) => {
     socket.on("privateMessage", ({ recipient, msg }) => {
         // Emit private message event to intended recipient
         const user = getCurrentUser(socket.id);
-        console.log("recipient : " + recipient);
-        io.to(recipient).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
+        console.log("recipient : " + recipient );
+        io.to(recipient.id).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
     });
 
     socket.on('chatMessage', (msg) => {
