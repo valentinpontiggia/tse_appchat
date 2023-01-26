@@ -1,7 +1,8 @@
 const moment = require ('moment');
 
-function formatMessage(username, text){
+function formatMessage(avatar, username, text){
     return {
+        avatar,
         username,
         text,
         time : moment().format('h:mm a')
@@ -18,4 +19,4 @@ const formatPrivateMessage = (username, text, recipient) => {
   };
   
 
-module.exports = {formatMessage,formatPrivateMessage};
+module.exports = {formatMessage, formatPrivateMessage};

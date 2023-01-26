@@ -11,14 +11,14 @@ const io = socketio(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const botName = 'AppChat Bot';
+const ChatBot = {avatar: "https://cdn-icons-png.flaticon.com/512/1786/1786548.png", username: "AppChat Bot"};
 
 io.on('connection', (socket) => {
     socket.on('joinRoom',({ username, room, is_typing, avatar}) => {
         const user = userJoin(socket.id, username, room, is_typing, avatar);
         socket.join(user.room);
-        socket.emit('message', formatMessage(botName,'Welcome here'));
-        socket.broadcast.to(user.room).emit('message', formatMessage(botName, user.username+ ' has joined the chat'));
+        socket.emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'Welcome here'));
+        socket.broadcast.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, user.username + ' has joined the chat.'));
 
         io.to(user.room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
     });
@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
         const user = userLeave(socket.id);
   
         if(user){
-            io.to(user.room).emit('message', formatMessage(botName, user.username+ ' has left the chat'));
+            io.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, user.username + ' has left the chat.'));
             io.to(user.room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
         }
     });
@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 
     socket.on('chatMessage', (msg) => {
         const user = getCurrentUser(socket.id);
-        io.to(user.room).emit('message', formatMessage(user.username,msg));
+        io.to(user.room).emit('message', formatMessage(user.avatar, user.username, msg));
         // If a message is sent, the user is done with typing. The following lines update the user status.
         user.is_typing = "";
         io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});

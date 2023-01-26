@@ -20,10 +20,10 @@ socket.on('roomUsers', ({room, users}) => {
     outputUsers(users);
 });
 
+// When a message is sent, the following lines are run
 socket.on('message', message => {
-    console.log(message);
+    // console.log(message);
     outputMessage(message);
-
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
@@ -95,13 +95,32 @@ socket.on("privateMessage", (message) => {
 function outputMessage (message) {
     const div = document.createElement('div');
     div.classList.add('message');
-    div.innerHTML = '<p class="meta">' + message.username +' <span>' + message.time + '</span></p><p class="text">' + message.text +'</p>';
+    console.log(message.avatar);
+    div.innerHTML = 
+    `<style>
+        #msg {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    </style>
+    <div id="msg">
+        <li>
+            <img src=${message.avatar} width="30" height="30"/>
+            <p>${message.username}</p>
+        </li>
+        <p>${message.time}</p>
+    </div>
+    <p>${message.text}</p>`;
     document.querySelector('.chat-messages').appendChild(div);
 }
 
 function outputRoomName (room){
     roomName.innerText = room;
 }
+
 function outputUsers (users){
     userList.innerHTML = users.map(user => 
         `<style>
@@ -115,8 +134,8 @@ function outputUsers (users){
             }
         </style>
         <li>
-            <img src="${user.avatar}" width="30" height="30"/> ${user.username} ${user.is_typing}
+            <img src="${user.avatar}" width="30" height="30"/>
+            <p>${user.username} ${user.is_typing}</p>
         </li>`
     ).join('');
-
 }
