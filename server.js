@@ -23,8 +23,7 @@ io.on('connection', (socket) => {
             // Have the user join the private room
             const user = userJoin(socket.id, username, room);
             socket.join(room);
-            io.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
-            io.to(room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
+            io.to(user.id).emit('message', formatMessage(botName,'You are now in a private room'));
             if (getRoomUsers(room).length<2){
                 console.log("room : "+room);
                 console.log("inviter : "+username)
