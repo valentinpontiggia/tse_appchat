@@ -37,6 +37,7 @@ input.addEventListener('input', () => {
     socket.emit('updateUserStatus', is_typing);
 });
 
+// This part helps keeping the informations about the user (username, room and avatar)
 buttonRooms.forEach(buttonRoom => {
     buttonRoom.addEventListener("click", function(event) {
         event.preventDefault();
