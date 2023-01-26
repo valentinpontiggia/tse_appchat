@@ -67,7 +67,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require("socket.io");
 const {formatMessage, formatPrivateMessage} = require('./utils/messages')
-const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users')
+const {userJoin, getCurrentUser, userLeave, getRoomUsers, userUpdateStatus} = require('./utils/users')
 
 const app = express();
 const server = http.createServer(app);
@@ -105,19 +105,15 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', (msg) => {
         const user = getCurrentUser(socket.id);
         io.to(user.room).emit('message', formatMessage(user.username,msg));
-    });
-
-    // This part adds " is typing" to the username when the user is typing
-    socket.on('typing', () => {
-        const user = getCurrentUser(socket.id);
-        user.is_typing = " is typing...";
+        // If a message is sent, the user is done with typing. The following lines update the user status.
+        user.is_typing = "";
         io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});
     });
 
-    // Refreshing the username status (" is typing" or "")
-    socket.on('update_user_status', () => {
+    // This part updates the user status while the user is typing
+    socket.on('updateUserStatus', (is_typing) => {
         const user = getCurrentUser(socket.id);
-        user.is_typing = "";
+        user.is_typing = is_typing;
         io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});
     });
 });

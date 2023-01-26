@@ -27,15 +27,15 @@ socket.on('message', message => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-// While the input is not empty, it is considered the user is typing
+// When the input is triggered, the user status is updated
 input.addEventListener('input', () => {
-    socket.emit('typing');
+    if (input.value == "" || input.value == null) {
+        is_typing = "";
+    } else {
+        is_typing = " is typing...";
+    }
+    socket.emit('updateUserStatus', is_typing);
 });
-
-// Each time a key is pressed, the username status (" is typing" or "") is updated
-input.addEventListener('keypress', () => {
-    socket.emit('update_user_status', "");
-})
 
 buttonRooms.forEach(buttonRoom => {
     buttonRoom.addEventListener("click", function(event) {
@@ -61,10 +61,6 @@ chatForm.addEventListener('submit', (e) => {
     e.target.elements.msg.value = '';
     e.target.elements.msg.focus();
 });
-
-/*socket.on('typing', username => {
-    feedback.innerHTML = '<p><em>' + username + ' is typing... </em></p>';
-});*/
 
 userList.addEventListener("click", (e) => {
     if (e.target && e.target.matches("li")) {
