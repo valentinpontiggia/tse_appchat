@@ -104,16 +104,23 @@ function outputMessage (message) {
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
+            font-family: sans-serif;
+        }
+        #username {
+            font-weight: bold;
+        }
+        #time {
+            color: grey;
         }
     </style>
     <div id="msg">
         <li>
             <img src=${message.avatar} width="30" height="30"/>
-            <p>${message.username}</p>
+            <p id="username">${message.username}</p>
         </li>
-        <p>${message.time}</p>
+        <p id="time">${message.time}</p>
     </div>
-    <p>${message.text}</p>`;
+    <p id="message">${message.text}</p>`;
     document.querySelector('.chat-messages').appendChild(div);
 }
 

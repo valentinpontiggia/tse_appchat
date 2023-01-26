@@ -38,6 +38,10 @@ a {
 	border-radius: 10px;
 }
 
+#join-chat {
+	padding: 10px;
+}
+
 #send {
 	height: 40px;
 	padding-left: 10px;
