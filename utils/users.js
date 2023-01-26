@@ -1,15 +1,7 @@
 var users = [];
 
-function userJoin(id, username, room, is_typing){
-    const user = { id, username, room, is_typing};
-    users.push(user);
-
-    return user;
-}
-
-function userUpdateStatus(id, username, room, is_typing){
-    const user = {id, username, room, is_typing};
-    users = [];
+function userJoin(id, username, room, is_typing, avatar){
+    const user = { id, username, room, is_typing, avatar};
     users.push(user);
 
     return user;
@@ -31,4 +23,4 @@ function getRoomUsers(room) {
     return users.filter(user => user.room === room);
  }
 
-module.exports = { userJoin, getCurrentUser, userLeave, getRoomUsers, userUpdateStatus};
+module.exports = { userJoin, getCurrentUser, userLeave, getRoomUsers};

@@ -5,15 +5,15 @@ const userList = document.getElementById('users');
 const input = document.getElementById('msg');
 const feedback = document.getElementById('feedback');
 const buttonRooms = document.querySelectorAll('.btnRoom');
-const {username, room } = Qs.parse(location.search, {
+const {username, room, avatar} = Qs.parse(location.search, {
     ignoreQueryPrefix : true
 });
 var compteur = 0;
 var is_typing = "";
 
+console.log(username + avatar);
 const socket = io();
-
-socket.emit('joinRoom', {username, room, is_typing});
+socket.emit('joinRoom', {username, room, is_typing, avatar});
 
 socket.on('roomUsers', ({room, users}) => {
     outputRoomName(room);
@@ -101,8 +101,21 @@ function outputMessage (message) {
 function outputRoomName (room){
     roomName.innerText = room;
 }
-
-function outputUsers (users, is_typing){
-    userList.innerHTML = users.map(user => `<li>${user.username} ${user.is_typing}</li>`).join('');
+function outputUsers (users){
+    userList.innerHTML = users.map(user => 
+        `<style>
+            li {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+            img {
+                margin-right: 10px;
+            }
+        </style>
+        <li>
+            <img src="${user.avatar}" width="30" height="30"/> ${user.username} ${user.is_typing}
+        </li>`
+    ).join('');
 
 }
