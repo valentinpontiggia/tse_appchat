@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require("socket.io");
 const {formatMessage, formatPrivateMessage} = require('./utils/messages')
-const {userJoin, getCurrentUser, userLeave, getRoomUsers} = require('./utils/users')
+const {userJoin, getCurrentUser, getIdByName, userLeave, getRoomUsers} = require('./utils/users')
 
 const app = express();
 const server = http.createServer(app);
@@ -17,16 +17,21 @@ io.on('connection', (socket) => {
     socket.on('joinRoom',({ username, room, is_typing, avatar}) => {
         if (room.startsWith('private-')) {
             // Get the recipient's username from the room name
-            const recipient = room.split('-')[1];
+            var lastDashIndex = room.lastIndexOf("-");
+            var recipient = room.substring(lastDashIndex+1);
+            //const recipient = room.split('-')[1];
             // Have the user join the private room
-            console.log("recipieeent :"+recipient);
-            console.log("room : "+room);
             const user = userJoin(socket.id, username, room, is_typing, avatar);
-            socket.join(user.room);
-            //socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
-            if(io.sockets.adapter.rooms[user.room]){
-                socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
+            console.log("recipient : "+ recipient);
+            console.log("emitter : "+user.username);
+            //console.log("id recipient : "+getIdByName(recipient));
+            //console.log("id emitter : "+getIdByName(user.username));
+            if (getRoomUsers(room).length<2){
+            socket.to(getIdByName(recipient)).emit('invite',(room,username));
+            socket.join(room);
             }
+            //socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
+            socket.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username,'Private room...'));
         
         } else {
         const user = userJoin(socket.id, username, room);
