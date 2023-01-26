@@ -15,6 +15,10 @@ function getIdByName(name){
     return users.find(user=> user.username === name).id;
 }
 
+function getIdByName(name){
+    return users.find(user=> user.username === name).id;
+}
+
 function userLeave(id){
     const index = users.findIndex(user => user.id === id);
 
