@@ -89,15 +89,15 @@ io.on('connection', (socket) => {
             const user = userJoin(socket.id, username, room);
             console.log("recipient : "+ recipient);
             console.log("emitter : "+user.username);
+            socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
             //console.log("id recipient : "+getIdByName(recipient));
             //console.log("id emitter : "+getIdByName(user.username));
             if (getRoomUsers(room).length<2){
-            socket.to(getIdByName(recipient)).emit('invite',(room,username));
-            socket.join(room);
+                console.log("room : "+room);
+                console.log("inviter : "+username)
+                socket.to(getIdByName(recipient)).emit('invite',(room,username));
+                socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
             }
-            //socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
-            socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
-        
         } else {
         const user = userJoin(socket.id, username, room);
         socket.join(user.room);
