@@ -79,6 +79,20 @@ const botName = 'AppChat Bot';
 
 io.on('connection', (socket) => {
     socket.on('joinRoom',({ username, room}) => {
+        if (room.startsWith('private-')) {
+            // Get the recipient's username from the room name
+            const recipient = room.split('-')[1];
+            // Have the user join the private room
+            console.log("recipieeent :"+recipient);
+            console.log("room : "+room);
+            const user = userJoin(socket.id, username, room);
+            socket.join(user.room);
+            //socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
+            if(io.sockets.adapter.rooms[user.room]){
+                socket.to(user.room).emit('message', formatMessage(botName,'Private room...'));
+            }
+        
+        } else {
         const user = userJoin(socket.id, username, room);
         socket.join(user.room);
 
@@ -86,6 +100,7 @@ io.on('connection', (socket) => {
         socket.broadcast.to(user.room).emit('message', formatMessage(botName, user.username+ ' has joined the chat'));
 
         io.to(user.room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
+        }
     });
     socket.on('disconnect', ()=> {
         const user = userLeave(socket.id);
@@ -100,7 +115,7 @@ io.on('connection', (socket) => {
         // Emit private message event to intended recipient
         const user = getCurrentUser(socket.id);
         console.log("recipient : " + recipient );
-        io.to(recipient).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
+        io.to(recipient.id).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
     });
 
     socket.on('chatMessage', (msg) => {
