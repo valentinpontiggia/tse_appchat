@@ -41,7 +41,7 @@ buttonRooms.forEach(buttonRoom => {
     buttonRoom.addEventListener("click", function(event) {
         event.preventDefault();
         const room = buttonRoom.dataset.room;
-        window.location.href = room + ".html?username=" + username + "&room=" + room;
+        window.location.href = room + ".html?username=" + username + "&room=" + room + "&avatar=" + avatar;
     });
 });
 
