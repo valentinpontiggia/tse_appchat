@@ -9,8 +9,9 @@ function formatMessage(avatar, username, text){
     }
 }
 
-const formatPrivateMessage = (username, text, recipient) => {
+const formatPrivateMessage = (avatar, username, text, recipient) => {
     return {
+      avatar,
       username,
       text,
       recipient,

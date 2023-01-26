@@ -75,14 +75,14 @@ userList.addEventListener("click", (e) => {
         socket.emit('joinRoom', { username, room: roomName });
 
         // Append the recipient's username to the URL as a query parameter
-        const newUrl = `${window.location.origin}/Private.html?username=${username}&room=${roomName}`;
+        const newUrl = `${window.location.origin}/Private.html?username=${username}&room=${roomName}&avatar=${avatar}`;
         window.location.href = newUrl;
     }
 });
 
 socket.on('invite', (room,inviter) =>{
     //socket.emit('joinRoom', {inviter, room});
-    window.location.href = `${window.location.origin}`+"/Private.html?username="+username+"&room=private-"+room+"-"+username;
+    window.location.href = `${window.location.origin}` + "/Private.html?username=" + username + "&room=private-" + room + "-" + username + "&avatar=" + avatar;
     socket.emit('joinRoom', { username, room: room });
     console.log("invite");
 });
@@ -91,7 +91,7 @@ socket.on("privateMessage", ({ recipient, msg }) => {
     // Emit private message event to intended recipient
     const user = getCurrentUser(socket.id);
     console.log("hohoho");
-    socket.to(`private-${recipient}`).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
+    socket.to(`private-${recipient}`).emit("privateMessage", formatPrivateMessage(user.avatar, user.username, msg, recipient));
 });
 
 function outputMessage (message) {

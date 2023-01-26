@@ -31,9 +31,9 @@ io.on('connection', (socket) => {
             //console.log("id recipient : "+getIdByName(recipient));
             //console.log("id emitter : "+getIdByName(user.username));
             if (getRoomUsers(room).length<2) {
-                console.log("room : "+room);
-                console.log("inviter : "+username)
-                socket.to(getIdByName(recipient)).emit('invite',(room,username));
+                console.log("room : " + room);
+                console.log("inviter : " + username)
+                socket.to(getIdByName(recipient)).emit('invite', (room,username));
                 socket.to(room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'You are now in a private room'));
             }
         } else {
@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
         // Emit private message event to intended recipient
         const user = getCurrentUser(socket.id);
         console.log("recipient : " + recipient );
-        io.to(recipient.id).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
+        io.to(recipient.id).emit("privateMessage", formatPrivateMessage(user.avatar, user.username, msg, recipient));
     });
 
     socket.on('chatMessage', (msg) => {
