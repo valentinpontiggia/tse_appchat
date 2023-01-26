@@ -75,15 +75,21 @@ userList.addEventListener("click", (e) => {
         const recipient = e.target.innerText;
 
         // Create a unique room name
-        const roomName = `private-${recipient}`;
+        const roomName = `private-${username}-${recipient}`;
 
         // Have the user join the private room
         socket.emit('joinRoom', { username, room: roomName });
 
         // Append the recipient's username to the URL as a query parameter
-        const newUrl = `${window.location.origin}${window.location.pathname}?recipient=${recipient}`;
-        window.history.pushState({}, "", newUrl);
+        const newUrl = `${window.location.origin}/Private.html?username=${username}&room=${roomName}`;
+        window.location.href = newUrl;
     }
+});
+
+socket.on('invite', (room,inviter) =>{
+    console.log("invite");
+    //socket.emit('joinRoom', {inviter, room});
+    window.location.href = `${window.location.origin}/Private.html?username=${inviter}&room=${room}`;
 });
 
 
