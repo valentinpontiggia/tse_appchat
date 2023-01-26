@@ -34,7 +34,7 @@ input.addEventListener('input', () => {
     } else {
         is_typing = " is typing...";
     }
-    socket.emit('updateUserStatus', is_typing);
+    socket.emit('updateUserStatus', {is_typing,roomName});
 });
 
 // This part helps keeping the informations about the user (username, room and avatar)
