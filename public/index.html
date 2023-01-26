@@ -126,7 +126,7 @@
 							<option value="Soggy">Soggy</option>
 						</select>
 					</div>
-					<button type="submit" class="btn" id="join-chat">Join Chat</button>
+					<button type="submit" onclick="login()" class="btn" id="join-chat">Join Chat</button>
 				</form>
 			</main>
 		</div>
@@ -135,12 +135,22 @@
 			function setAvatar(id) {
 				av = document.getElementById(id);
 			}
-			document.querySelector("form").addEventListener("submit", function(event) {
+
+			function login() {
 				event.preventDefault();
 				var room = document.getElementById("room").value;
 				var username = document.getElementById("username").value;
 				console.log(av.src);
 				window.location.href = room + ".html?username=" + username + "&room=" + room + "&avatar=" + av.src;
+			}
+			
+			document.getElementById("username").addEventListener("keypress", function(event) {
+				if (event.key === "Enter") {
+					// Cancel the default action, if needed
+					event.preventDefault();
+					// Trigger the button element with a click
+					document.getElementById("join-chat").click();
+  				}
 			});
 		</script>
 	</body>
