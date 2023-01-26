@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
             console.log("recipient : "+ recipient);
             console.log("emitter : "+user.username);
             socket.join(room);
-            socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
+            socket.to(room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'You are now in a private room'));
             io.to(room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
             //console.log("id recipient : "+getIdByName(recipient));
             //console.log("id emitter : "+getIdByName(user.username));

@@ -63,22 +63,6 @@ chatForm.addEventListener('submit', (e) => {
     e.target.elements.msg.focus();
 });
 
-
-/*socket.on('typing', username => {
-    feedback.innerHTML = '<p><em>' + username + ' is typing... </em></p>';
-});*/
-
-/*userList.addEventListener("click", (e) => {
-    if (e.target && e.target.matches("li")) {
-        // Get the recipient's username
-        const recipient = e.target.innerText;
-
-        // Append the recipient's username to the URL as a query parameter
-        const newUrl = `${window.location.origin}${window.location.pathname}?recipient=${recipient}`;
-        window.history.pushState({}, "", newUrl);
-    }
-});*/
-
 userList.addEventListener("click", (e) => {
     if (e.target && e.target.matches("li")) {
         // Get the recipient's username
@@ -103,32 +87,12 @@ socket.on('invite', (room,inviter) =>{
     console.log("invite");
 });
 
-
-/*socket.on("privateMessage", (message) => {
-    const { recipient } = Qs.parse(location.search, { ignoreQueryPrefix: true });
-    console.log("message.recipient : " + message.recipient);
-    console.log("recipient : "+recipient);
-    console.log("username : "+username);
-    if (message.recipient === recipient || message.recipient === username) {
-        console.log("goooo");
-        // Handle private message
-        const div = document.createElement("div");
-        div.classList.add("private-message");
-        div.innerHTML = `<p class="meta">${message.sender} <span>${message.time}</span></p><p class="text">${message.msg}</p>`;
-        console.log(div);
-        //document.querySelector('.chat-messages').hidden = true;
-        //document.querySelector('.private-chat-messages').hidden = false;
-        document.querySelector('.chat-messages').appendChild(div);
-    }
-});*/
-
 socket.on("privateMessage", ({ recipient, msg }) => {
     // Emit private message event to intended recipient
     const user = getCurrentUser(socket.id);
     console.log("hohoho");
     socket.to(`private-${recipient}`).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
 });
-
 
 function outputMessage (message) {
     const div = document.createElement('div');
