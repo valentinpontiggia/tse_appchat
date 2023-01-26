@@ -1,67 +1,3 @@
-/*const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/home.html');
-});
-
-io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
-
-io.on('connection', (socket) => {
-    var user_log = ''
-
-    socket.on('login', function (user) {
-        user_log = user.username;
-    });
-
-    socket.on('welcome message', (username) => {
-      io.emit('chat message', username + " has arrived !");
-    });
-
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', "<b>" + user_log + " : </b>" + msg);
-    });
-
-    socket.on('typing', (data)=>{
-        socket.broadcast.emit('typing',data) ;         
-    });
-
-    socket.on("disconnect", () => {
-        io.emit('chat message', user_log + " left.");
-    });
-});
-
-let connectedUsers = [];
-
-io.on('connection', (socket) => {
-    var user;
-    // When a user connects, add them to the connectedUsers list
-    socket.on('login', (data) => {
-        user = data.username;
-        connectedUsers.push(data.username);
-        io.emit('updateUsers', connectedUsers);
-    });
-
-    // When a user disconnects, remove them from the connectedUsers list
-    socket.on('disconnect', () => {
-        if (connectedUsers.indexOf(user) != -1) {
-            connectedUsers.splice(connectedUsers.indexOf(user), 1);
-        }
-        io.emit('updateUsers', connectedUsers);
-    });
-});
-
-
-
-server.listen(3000, () => {
-    console.log('listening on :3000');
-});*/
-
 const path = require('path');
 const http = require('http');
 const express = require('express');
@@ -84,19 +20,17 @@ io.on('connection', (socket) => {
             // Get the recipient's username from the room name
             var lastDashIndex = room.lastIndexOf("-");
             var recipient = room.substring(lastDashIndex+1);
-            //const recipient = room.split('-')[1];
             // Have the user join the private room
             const user = userJoin(socket.id, username, room);
-            console.log("recipient : "+ recipient);
-            console.log("emitter : "+user.username);
-            socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
-            //console.log("id recipient : "+getIdByName(recipient));
-            //console.log("id emitter : "+getIdByName(user.username));
+            socket.join(room);
+            io.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
+            io.to(room).emit('roomUsers',{room : user.room, users: getRoomUsers(user.room)});
             if (getRoomUsers(room).length<2){
                 console.log("room : "+room);
                 console.log("inviter : "+username)
                 socket.to(getIdByName(recipient)).emit('invite',(room,username));
-                socket.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
+                socket.join(room);
+                io.to(room).emit('message', formatMessage(botName,'You are now in a private room'));
             }
         } else {
         const user = userJoin(socket.id, username, room);
