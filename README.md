@@ -21,9 +21,6 @@
             <a href="#how-to-run-the-code">How to run the code</a>
         </li>
         <li>
-            <a href="#built-with">Built With</a>
-        </li>
-        <li>
             <a href="#authors">Authors</a>
         </li>
     </ol>
@@ -42,8 +39,6 @@ The user should have `node.js` installed.
 ## How to run the code ?
 
 In order to run the app, you need to use the nodejs commmand prompt and be in the `tp3` folder, and run the command `node server.js`. Then go in your browser at the following address : http://localhost:3000/.
-
-## Built with
 
 ## Authors
 
