@@ -1,7 +1,7 @@
 const users = [];
 
-function userJoin(id, username, room){
-    const user = { id, username, room};
+function userJoin(id, username, room, is_typing){
+    const user = { id, username, room, is_typing};
     users.push(user);
 
     return user;

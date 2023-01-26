@@ -78,10 +78,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 const botName = 'AppChat Bot';
 
 io.on('connection', (socket) => {
-    socket.on('joinRoom',({ username, room}) => {
-        const user = userJoin(socket.id, username, room);
+    socket.on('joinRoom',({ username, room, is_typing}) => {
+        const user = userJoin(socket.id, username, room, is_typing);
         socket.join(user.room);
-
         socket.emit('message', formatMessage(botName,'Welcome here'));
         socket.broadcast.to(user.room).emit('message', formatMessage(botName, user.username+ ' has joined the chat'));
 
@@ -99,7 +98,7 @@ io.on('connection', (socket) => {
     socket.on("privateMessage", ({ recipient, msg }) => {
         // Emit private message event to intended recipient
         const user = getCurrentUser(socket.id);
-        console.log("recipient : " + recipient );
+        console.log("recipient : " + recipient);
         io.to(recipient).emit("privateMessage", formatPrivateMessage(user.username, msg, recipient));
     });
 
@@ -108,10 +107,19 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('message', formatMessage(user.username,msg));
     });
 
-    /*socket.on('typing', (username)=>{
+    // This part adds " is typing" to the username when the user is typing
+    socket.on('typing', () => {
         const user = getCurrentUser(socket.id);
-        io.to(user.room).broadcast.emit('typing', username) ;         
-    });*/
+        user.is_typing = " is typing...";
+        io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});
+    });
+
+    // Refreshing the username status (" is typing" or "")
+    socket.on('update_user_status', () => {
+        const user = getCurrentUser(socket.id);
+        user.is_typing = "";
+        io.to(user.room).emit('roomUsers', {room : user.room, users: getRoomUsers(user.room)});
+    });
 });
 
 const PORT = 3000;

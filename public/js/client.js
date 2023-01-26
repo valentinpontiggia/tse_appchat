@@ -8,12 +8,14 @@ const buttonRooms = document.querySelectorAll('.btnRoom');
 const {username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix : true
 });
+var compteur = 0;
+var is_typing = "";
 
 const socket = io();
 
-socket.emit('joinRoom', {username, room});
+socket.emit('joinRoom', {username, room, is_typing});
 
-socket.on('roomUsers', ({ room, users}) => {
+socket.on('roomUsers', ({room, users}) => {
     outputRoomName(room);
     outputUsers(users);
 });
@@ -25,9 +27,15 @@ socket.on('message', message => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-/*input.addEventListener('keypress', () => {
-    socket.emit('typing', username);
-});*/
+// While the input is not empty, it is considered the user is typing
+input.addEventListener('input', () => {
+    socket.emit('typing');
+});
+
+// Each time a key is pressed, the username status (" is typing" or "") is updated
+input.addEventListener('keypress', () => {
+    socket.emit('update_user_status', "");
+})
 
 buttonRooms.forEach(buttonRoom => {
     buttonRoom.addEventListener("click", function(event) {
@@ -98,6 +106,7 @@ function outputRoomName (room){
     roomName.innerText = room;
 }
 
-function outputUsers (users){
-    userList.innerHTML = users.map(user => `<li>${user.username}</li>`).join('');
+function outputUsers (users, is_typing){
+    userList.innerHTML = users.map(user => `<li>${user.username} ${user.is_typing}</li>`).join('');
+
 }
