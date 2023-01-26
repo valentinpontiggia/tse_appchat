@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
             socket.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username,'Private room...'));
         
         } else {
-        const user = userJoin(socket.id, username, room);
+        const user = userJoin(socket.id, username, room, is_typing, avatar);
         socket.join(user.room);
         socket.emit('message', formatMessage(ChatBot.avatar, ChatBot.username, 'Welcome here'));
         socket.broadcast.to(user.room).emit('message', formatMessage(ChatBot.avatar, ChatBot.username, user.username + ' has joined the chat.'));
